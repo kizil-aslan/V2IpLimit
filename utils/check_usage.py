@@ -10,6 +10,10 @@ from telegram_bot.send_message import send_logs
 from utils.logs import logger
 from utils.panel_api import disable_user
 from utils.read_config import read_config
+from utils.read_config import detect_user
+from utils.read_config import add_detected_user
+from utils.read_config import delete_detected_user
+from utils.read_config import get_detected_users
 from utils.types import PanelType, UserType
 
 ACTIVE_USERS: dict[str, UserType] | dict = {}
@@ -61,20 +65,36 @@ async def check_users_usage(panel_data: PanelType):
     except_users = config_data.get("EXCEPT_USERS", [])
     special_limit = config_data.get("SPECIAL_LIMIT", {})
     limit_number = config_data["GENERAL_LIMIT"]
+    out_of_limit_number = config_data["outOfLimitNumber"]
+    detected_users= await get_detected_users()
     for user_name, user_ip in all_users_log.items():
         if user_name not in except_users:
-            user_limit_number = int(special_limit.get(user_name, limit_number))
-            if len(set(user_ip)) > user_limit_number:
-                message = (
-                    f"User {user_name} has {str(len(set(user_ip)))}"
-                    + f" active ips. {str(set(user_ip))}"
-                )
-                logger.warning(message)
-                await send_logs(str("<b>Warning: </b>" + message))
-                try:
-                    await disable_user(panel_data, UserType(name=user_name, ip=[]))
-                except ValueError as error:
-                    print(error)
+            try:
+                user_limit_number = int(next((u for u in special_limit if u[0] == user_name), None)[1])
+            except:
+                user_limit_number = limit_number
+            detected_user=next((u for u in detected_users if u["user"] == user_name), None)
+            if detected_user != None:
+                ips = list(detected_user["ips"])
+                if sum(1 for i in list(user_ip) if i in ips) > user_limit_number:
+                    await detect_user(user_name, list(user_ip))
+                    if int((detected_user["outOfLimitCount"]) + 1) >= out_of_limit_number:
+                        message = (
+                            f"User {user_name} has {str(len(set(user_ip)))}"
+                            + f" active ips. {str(set(user_ip))}"
+                        )
+                        logger.warning(message)
+                        await send_logs(str("<b>Warning: </b>" + message))
+                        try:
+                            await disable_user(panel_data, UserType(name=user_name, ip=[]))
+                        except ValueError as error:
+                            print(error)
+                        await delete_detected_user(user_name)
+                else:
+                    await delete_detected_user(user_name)
+            else:
+                if len(set(user_ip)) > user_limit_number:
+                    await add_detected_user(user_name,list(user_ip))
     ACTIVE_USERS.clear()
     all_users_log.clear()
 
