@@ -14,6 +14,4 @@ COPY . /v2iplimitcode
 
 RUN chmod +x api.py
 
-ENTRYPOINT [ "python" ]
-
-CMD ["api.py"]
+CMD ["python", "api.py"]
