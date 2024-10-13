@@ -1,0 +1,8 @@
+services:
+  marzban:
+    image: ghcr.io/kizil-aslan/v2iplimit:latest
+    restart: always
+    network_mode: host
+    volumes:
+      - /opt/v2iplimit/config.json:/v2iplimitcode/config.json
+      - /opt/v2iplimit/app.log:/v2iplimitcode/app.log

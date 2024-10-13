@@ -4,6 +4,8 @@ import os
 import subprocess
 import time
 from datetime import datetime
+import asyncio
+import v2iplimit
 
 app = Flask(__name__)
 
@@ -43,7 +45,8 @@ def terminate_existing_processes():
 
 def start_new_process():
     log("Starting v2iplimit.py")
-    subprocess.Popen(["python3", SCRIPT_PATH])
+    subprocess.Popen(["python", SCRIPT_PATH])
+    #v2iplimit.main()
 
 @app.route('/update_special_limit', methods=['POST'])
 def update_special_limit():
@@ -84,4 +87,4 @@ def update_special_limit():
 if __name__ == '__main__':
     terminate_existing_processes()
     start_new_process()
-    app.run(debug=True)
+    app.run(port = int(os.environ.get('PORT', 5000)),debug=True)

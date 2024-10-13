@@ -39,7 +39,7 @@ async def get_token(panel_data: PanelType) -> PanelType | ValueError:
         "password": f"{panel_data.panel_password}",
     }
     for attempt in range(20):
-        for scheme in ["https", "http"]:
+        for scheme in ["http"]:
             url = f"{scheme}://{panel_data.panel_domain}/api/admin/token"
             try:
                 async with httpx.AsyncClient(verify=False) as client:
@@ -93,7 +93,7 @@ async def all_user(panel_data: PanelType) -> list[UserType] | ValueError:
         headers = {
             "Authorization": f"Bearer {token}",
         }
-        for scheme in ["https", "http"]:
+        for scheme in ["http"]:
             url = f"{scheme}://{panel_data.panel_domain}/api/users"
             try:
                 async with httpx.AsyncClient(verify=False) as client:
@@ -151,7 +151,7 @@ async def enable_all_user(panel_data: PanelType) -> None | ValueError:
     if isinstance(users, ValueError):
         raise users
     for username in users:
-        for scheme in ["https", "http"]:  # add this later: save what scheme is used
+        for scheme in ["http"]:  # add this later: save what scheme is used
             url = f"{scheme}://{panel_data.panel_domain}/api/user/{username.name}"
             status = {"status": "active"}
             try:
@@ -207,7 +207,7 @@ async def enable_selected_users(
                 "Authorization": f"Bearer {token}",
             }
             status = {"status": "active"}
-            for scheme in ["https", "http"]:
+            for scheme in ["http"]:
                 url = f"{scheme}://{panel_data.panel_domain}/api/user/{username}"
                 try:
                     async with httpx.AsyncClient(verify=False) as client:
@@ -271,7 +271,7 @@ async def disable_user(panel_data: PanelType, username: UserType) -> None | Valu
             "Authorization": f"Bearer {token}",
         }
         status = {"status": "disabled"}
-        for scheme in ["https", "http"]:
+        for scheme in ["http"]:
             url = f"{scheme}://{panel_data.panel_domain}/api/user/{username.name}"
             try:
                 async with httpx.AsyncClient(verify=False) as client:
@@ -331,7 +331,7 @@ async def get_nodes(panel_data: PanelType) -> list[NodeType] | ValueError:
             "Authorization": f"Bearer {token}",
         }
         all_nodes = []
-        for scheme in ["https", "http"]:
+        for scheme in ["http"]:
             url = f"{scheme}://{panel_data.panel_domain}/api/nodes"
             try:
                 async with httpx.AsyncClient(verify=False) as client:
