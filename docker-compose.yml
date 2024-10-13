@@ -2,6 +2,8 @@ services:
   marzban:
     image: ghcr.io/kizil-aslan/v2iplimit:latest
     restart: always
+    environment:
+      PORT: 5000
     network_mode: host
     volumes:
       - /opt/v2iplimit/config.json:/v2iplimitcode/config.json
