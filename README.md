@@ -21,6 +21,35 @@ Supports both IPv4 and IPv6 And Marzban-node
 
 ## Installation
 
+Installation with docker:
+
+Install docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+```
+
+```bash
+mkdir /opt/v2iplimit
+cd /opt/v2iplimit
+```
+
+```bash
+curl -O -L "https://raw.githubusercontent.com/kizil-aslan/V2IpLimit/houshmand/config.json";
+```
+
+```bash
+curl -O -L "https://raw.githubusercontent.com/kizil-aslan/V2IpLimit/houshmand/app.log";
+```
+
+```bash
+curl -O -L "https://raw.githubusercontent.com/kizil-aslan/V2IpLimit/houshmand/docker-compose.yml";
+```
+
+```bash
+docker compose up -d
+```
+
 You can install V2IpLimit by running the following command in your terminal:
 
 ```bash
